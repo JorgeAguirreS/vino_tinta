@@ -1,0 +1,46 @@
+name: Build Vino Tinta Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout vino_tinta
+        uses: actions/checkout@v4
+
+      - name: Checkout frappe_docker
+        uses: actions/checkout@v4
+        with:
+          repository: frappe/frappe_docker
+          path: frappe_docker
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build custom image
+        working-directory: frappe_docker
+        run: |
+          cp ../apps.json ./apps.json
+
+          docker build \
+            --secret id=apps_json,src=apps.json \
+            -t ghcr.io/jorgeaguirres/vino-tinta:latest \
+            -f images/custom/Containerfile .
+
+      - name: Push image
+        run: |
+          docker push ghcr.io/jorgeaguirres/vino-tinta:latest
