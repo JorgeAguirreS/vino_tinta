@@ -1,14 +1,20 @@
 name: Deploy Vino Tinta
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows:
+      - "Build Vino Tinta Image"
+    types:
+      - completed
 
   workflow_dispatch:
 
 jobs:
   deploy:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
     runs-on: ubuntu-latest
 
     steps:
@@ -20,14 +26,30 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
 
           script: |
+            set -e
+
             echo "=== INICIANDO DEPLOY ==="
 
-            cd /home/azureuser/proyectos/vino_tinta
+            cd /home/azureuser/gitops
 
-            echo "=== ACTUALIZANDO REPOSITORIO ==="
-            git pull origin main
+            echo "=== DESCARGANDO NUEVA IMAGEN ==="
+            docker pull ghcr.io/jorgeaguirres/vino-tinta:latest
 
-            echo "=== VERSION ACTUAL ==="
-            git log -1 --oneline
+            echo "=== ACTUALIZANDO CONTENEDORES ==="
+            docker compose \
+              --project-name vinotinta \
+              -f /home/azureuser/gitops/docker-compose.yml \
+              up -d
+
+            echo "=== EJECUTANDO MIGRACIONES ==="
+            docker exec vinotinta-backend-1 \
+              bench --site vinotinta.local migrate
+
+            echo "=== VERIFICANDO APPS ==="
+            docker exec vinotinta-backend-1 \
+              bench --site vinotinta.local list-apps
+
+            echo "=== CONTENEDORES ==="
+            docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
 
             echo "=== DEPLOY FINALIZADO ==="
