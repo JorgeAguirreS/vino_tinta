@@ -32,6 +32,10 @@ jobs:
 
             cd /home/azureuser/gitops
 
+            echo "=== BACKUP DEL SITIO ==="
+            docker exec vinotinta-backend-1 \
+              bench --site vinotinta.local backup
+
             echo "=== DESCARGANDO NUEVA IMAGEN ==="
             docker pull ghcr.io/jorgeaguirres/vino-tinta:latest
 
@@ -41,6 +45,9 @@ jobs:
               -f /home/azureuser/gitops/docker-compose.yml \
               up -d
 
+            echo "=== ESPERANDO SERVICIOS ==="
+            sleep 15
+
             echo "=== EJECUTANDO MIGRACIONES ==="
             docker exec vinotinta-backend-1 \
               bench --site vinotinta.local migrate
@@ -48,6 +55,12 @@ jobs:
             echo "=== VERIFICANDO APPS ==="
             docker exec vinotinta-backend-1 \
               bench --site vinotinta.local list-apps
+
+            echo "=== HEALTH CHECK ==="
+            curl --fail --silent --show-error \
+              http://127.0.0.1:8080 > /dev/null
+
+            echo "ERPNext responde correctamente"
 
             echo "=== CONTENEDORES ==="
             docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
