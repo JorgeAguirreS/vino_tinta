@@ -32,6 +32,12 @@ jobs:
 
             cd /home/azureuser/gitops
 
+            echo "=== GUARDANDO IMAGEN ACTUAL ==="
+            OLD_IMAGE=$(docker inspect vinotinta-backend-1 \
+              --format='{{.Image}}')
+
+            echo "Imagen anterior: $OLD_IMAGE"
+
             echo "=== BACKUP DEL SITIO ==="
             docker exec vinotinta-backend-1 \
               bench --site vinotinta.local backup
@@ -57,10 +63,29 @@ jobs:
               bench --site vinotinta.local list-apps
 
             echo "=== HEALTH CHECK ==="
-            curl --fail --silent --show-error \
-              http://127.0.0.1:8080 > /dev/null
 
-            echo "ERPNext responde correctamente"
+            if curl --fail --silent --show-error \
+              http://127.0.0.1:8080 > /dev/null; then
+
+              echo "ERPNext responde correctamente"
+
+            else
+
+              echo "HEALTH CHECK FALLÓ"
+              echo "=== INICIANDO ROLLBACK ==="
+
+              docker tag "$OLD_IMAGE" \
+                ghcr.io/jorgeaguirres/vino-tinta:latest
+
+              docker compose \
+                --project-name vinotinta \
+                -f /home/azureuser/gitops/docker-compose.yml \
+                up -d --force-recreate
+
+              echo "=== ROLLBACK COMPLETADO ==="
+
+              exit 1
+            fi
 
             echo "=== CONTENEDORES ==="
             docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
