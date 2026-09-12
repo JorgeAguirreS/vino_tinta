@@ -1,13 +1,20 @@
 name: Build Vino Tinta Image
 
 on:
+  workflow_run:
+    workflows:
+      - "CI"
+    types:
+      - completed
+
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   build:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -17,6 +24,8 @@ jobs:
     steps:
       - name: Checkout vino_tinta
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Checkout frappe_docker
         uses: actions/checkout@v4
