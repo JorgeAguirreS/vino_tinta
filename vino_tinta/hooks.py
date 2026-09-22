@@ -50,6 +50,7 @@ app_license = "mit"
 
 # Svg Icons
 # ------------------
+
 # include app icons in desk
 # app_include_icons = "vino_tinta/public/icons.svg"
 
@@ -96,55 +97,45 @@ app_license = "mit"
 
 # Integration Setup
 # ------------------
-# To set up dependencies/integrations with other apps
-# Name of the app being installed is passed as an argument
 
 # before_app_install = "vino_tinta.utils.before_app_install"
 # after_app_install = "vino_tinta.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
-# To clean up dependencies/integrations with other apps
-# Name of the app being uninstalled is passed as an argument
 
 # before_app_uninstall = "vino_tinta.utils.before_app_uninstall"
 # after_app_uninstall = "vino_tinta.utils.after_app_uninstall"
 
 # Build
 # ------------------
-# To hook into the build process
 
 # after_build = "vino_tinta.build.after_build"
 
 # Desk Notifications
 # ------------------
-# See frappe.core.notifications.get_notification_config
 
 # notification_config = "vino_tinta.notifications.get_notification_config"
 
 # Permissions
 # -----------
-# Permissions evaluated in scripted ways
 
 # permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+# 	"Event": "frappe.desk.doctype.event.get_permission_query_conditions",
 # }
-#
+
 # has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
+# 	"Event": "frappe.desk.doctype.event.has_permission",
 # }
 
 # Document Events
 # ---------------
-# Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Pieza Vino Tinta": {
+		"after_insert": "vino_tinta.pieza.asignar_codigo_pieza",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -174,28 +165,23 @@ app_license = "mit"
 
 # Extend DocType Class
 # ------------------------------
-#
-# Specify custom mixins to extend the standard doctype controller.
+
 # extend_doctype_class = {
 # 	"Task": "vino_tinta.custom.task.CustomTaskMixin"
 # }
 
 # Overriding Methods
 # ------------------------------
-#
+
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "vino_tinta.event.get_events"
+# 	"frappe.desk.doctype.event.get_events": "vino_tinta.event.get_events"
 # }
-#
-# each overriding function accepts a `data` argument;
-# generated from the base implementation of the doctype dashboard,
-# along with any modifications made in other Frappe apps
+
 # override_doctype_dashboards = {
 # 	"Task": "vino_tinta.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
-#
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 
 # Ignore links to specified DocTypes when deleting documents
@@ -204,12 +190,14 @@ app_license = "mit"
 # ignore_links_on_delete = ["Communication", "ToDo"]
 
 # Request Events
-# ----------------
+# --------------
+
 # before_request = ["vino_tinta.utils.before_request"]
 # after_request = ["vino_tinta.utils.after_request"]
 
 # Job Events
 # ----------
+
 # before_job = ["vino_tinta.utils.before_job"]
 # after_job = ["vino_tinta.utils.after_job"]
 
@@ -248,11 +236,10 @@ app_license = "mit"
 # export_python_type_annotations = True
 
 # default_log_clearing_doctypes = {
-# 	"Logging DocType Name": 30  # days to retain logs
+# 	"Logging DocType Name": 30
 # }
 
 # Translation
-# ------------
-# List of apps whose translatable strings should be excluded from this app's translations.
-# ignore_translatable_strings_from = []
+# -----------
 
+# ignore_translatable_strings_from = []
