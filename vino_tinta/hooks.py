@@ -43,10 +43,10 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
-# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
+# doctype_js = {"doctype": "public/js/doctype.js"}
+# doctype_list_js = {"doctype": "public/js/doctype_list.js"}
+# doctype_tree_js = {"doctype": "public/js/doctype_tree.js"}
+# doctype_calendar_js = {"doctype": "public/js/doctype_calendar.js"}
 
 # Svg Icons
 # ------------------
@@ -93,7 +93,7 @@ app_license = "mit"
 # ------------
 
 # before_uninstall = "vino_tinta.uninstall.before_uninstall"
-# after_uninstall = "vino_tinta.uninstall.after_uninstall"
+# after_uninstall = "vino_tinta.uninstall.after_install"
 
 # Integration Setup
 # ------------------
@@ -134,7 +134,14 @@ app_license = "mit"
 doc_events = {
 	"Pieza Vino Tinta": {
 		"after_insert": "vino_tinta.pieza.asignar_codigo_pieza",
-	}
+	},
+
+	"Reserva de Evento": {
+		"validate": "vino_tinta.reservas.validar_cupo_evento",
+		"after_insert": "vino_tinta.reservas.actualizar_cupos_evento",
+		"on_update": "vino_tinta.reservas.actualizar_cupos_evento",
+		"after_delete": "vino_tinta.reservas.actualizar_cupos_al_eliminar",
+	},
 }
 
 # Scheduled Tasks
@@ -209,16 +216,16 @@ doc_events = {
 # 		"doctype": "{doctype_1}",
 # 		"filter_by": "{filter_by}",
 # 		"redact_fields": ["{field_1}", "{field_2}"],
-# 		"partial": 1,
+# 		"partial": 1
 # 	},
 # 	{
 # 		"doctype": "{doctype_2}",
 # 		"filter_by": "{filter_by}",
-# 		"partial": 1,
+# 		"partial": 1
 # 	},
 # 	{
 # 		"doctype": "{doctype_3}",
-# 		"strict": False,
+# 		"strict": False
 # 	},
 # 	{
 # 		"doctype": "{doctype_4}"
