@@ -30,7 +30,7 @@ app_license = "mit"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/vino_tinta/css/vino_tinta.css"
-# web_include_js = "/assets/vino_tinta/js/vino_tinta.js"
+web_include_js = "/assets/vino_tinta/js/book_appointment.js"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "vino_tinta/public/scss/website"
@@ -43,10 +43,10 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype": "public/js/doctype.js"}
-# doctype_list_js = {"doctype": "public/js/doctype_list.js"}
-# doctype_tree_js = {"doctype": "public/js/doctype_tree.js"}
-# doctype_calendar_js = {"doctype": "public/js/doctype_calendar.js"}
+# doctype_js = {"doctype" : "public/js/doctype.js"}
+# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
+# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
 # Svg Icons
 # ------------------
@@ -93,7 +93,7 @@ app_license = "mit"
 # ------------
 
 # before_uninstall = "vino_tinta.uninstall.before_uninstall"
-# after_uninstall = "vino_tinta.uninstall.after_install"
+# after_uninstall = "vino_tinta.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
